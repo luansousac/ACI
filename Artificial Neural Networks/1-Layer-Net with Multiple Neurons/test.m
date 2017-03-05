@@ -14,13 +14,12 @@ function [ score ] = test( X_test, Y_test, W )
     % Testing the model for each test sample
     for j = 1 : n_patterns
         % Computing the output 'Y' using the logistic function
-        U = W * X_test(j,:)';
-        Y(:,j) = logsig(U);
+        Y(:,j) = logsig(W * X_test(j,:)');
 
         % Binarizing each activation from the output 'Y'
-		Y(:,j) = evaluate(Y(:,j), 2);
+        Y(:,j) = evaluate(Y(:,j), 2);
 
-		% Increments the score if the classification is correct
+        % Increments the score if the classification is correct
         score = score + isequal(Y(:,j)', Y_test(j,:));
     end
 

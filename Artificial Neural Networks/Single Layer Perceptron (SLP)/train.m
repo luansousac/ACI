@@ -1,5 +1,5 @@
 function [ W ] = train( X_training, Y_training, W, l_rate, n_epochs )
-%TRAIN train the 1-layer with mutiple perceptron neurons
+%TRAIN train the single perceptron with its learning algorithm
 %
 %   Training each sample from the training data to update the weight
 %   vector iteratively in the inside loop

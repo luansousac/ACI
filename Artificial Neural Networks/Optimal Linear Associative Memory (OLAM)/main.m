@@ -31,7 +31,7 @@ pause
 %% Importing the data set into the workspace
 
 disp('Choose the dataset from the options below.');
-opt = input(['(1) Banknote Annotations, (2) Iris Flower, ' ...
+opt = input(['(1) Banknote Authentication, (2) Iris Flower, ' ...
              '(3) Vertebral Column, (4) Artificial Dataset: ']);
 
 switch opt
@@ -69,11 +69,9 @@ norm_data = normalize(data);
 
 % Iteration control
 n_iter = 10;
-l_rate = 0.05;
 scores = zeros(n_iter, 1);
 
 % Training settings
-n_epochs  = 10;
 n_classes = length(unique(classes,'rows'));
 
 if n_classes < 3
@@ -94,20 +92,20 @@ for i = 1 : n_iter
     [X_training, Y_training, X_test, Y_test] = split_data(norm_data, n_neurons);
 
     % Training in batch mode (OLAM). The default calculation is:
-    % W = (Y_training * X_training') / (X_training * X_training').
-    % But, in order to adapt the code to the matrices disposal, it
-    % becomes the following calculation, which is similar to the above.
-    W = (Y_training' * X_training) / (X_training' * X_training);
+    % W = inv(X_training' * X_training) * (X_training' * Y_training).
+    % But, in order to optimize the code, it becomes the following
+    % calculation, which is similar to the above.
+    W = (X_training' * X_training) \ (X_training' * Y_training);
 
 %% Testing the associative memory
 
     % Adjusting the weight vector found during the training phase so
     % the output can be approximately in the interval [-a, a].
     W = W - 0.5;
-    Y = W * X_test';
+    Y = X_test * W;
 
     % Binarizing the activations from the output 'Y'
-    Y = evaluate(Y);
+    Y = evaluate(Y');
 
     % Getting the hit rate of the network
     score = sum(Y_test == Y', 2);
@@ -119,10 +117,8 @@ for i = 1 : n_iter
 
 %% Ploting results for the report
 
-    % x = 1 : n_iter;
-    % 
-    % plot(x, scores, 'b')
     % hold on
+    % plot(1 : n_iter, scores, 'b')
     % xlabel('Iterações')
     % ylabel('Acurácia')
     %
